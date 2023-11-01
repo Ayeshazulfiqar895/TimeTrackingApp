@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.TimeTrackingApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/buttonBackground</item>
+    </style>
+
+    <style name="Theme.TimeTrackingApp" parent="Base.Theme.TimeTrackingApp" />
+    <style name="BottomNavigationStyle" parent="Widget.Design.BottomNavigationView">
+        <!-- Customize the icon color -->
+<!--        <item name="android:itemIconTint">@color/custom_nav_icon_color</item>-->
+
+    </style>
+
+</resources>

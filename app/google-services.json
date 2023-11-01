@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "227490691221",
+    "project_id": "time-tracking-app-ff63c",
+    "storage_bucket": "time-tracking-app-ff63c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:227490691221:android:7ca5f1ca7f834bdfe5439c",
+        "android_client_info": {
+          "package_name": "com.example.timetrackingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "227490691221-7uqg60p8ahjq7oi46d9n9glm81l3hb9n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpBa6PPtI7hVsnrk31Bbv1v-hMtSeUDr8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "227490691221-7uqg60p8ahjq7oi46d9n9glm81l3hb9n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
