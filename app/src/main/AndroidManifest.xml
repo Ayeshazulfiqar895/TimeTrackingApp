@@ -18,21 +18,6 @@
             android:name=".bottomNavigation"
             android:exported="false" />
         <activity
-            android:name=".add_activity"
-            android:exported="false" />
-        <activity
-            android:name=".Track_time"
-            android:exported="false" />
-        <activity
-            android:name=".Reports"
-            android:exported="false" />
-        <activity
-            android:name=".Activity_list"
-            android:exported="false" />
-        <activity
-            android:name=".Home"
-            android:exported="false" />
-        <activity
             android:name=".register"
             android:exported="false" />
         <activity
@@ -44,10 +29,6 @@
         <activity
             android:name=".login_pg"
             android:exported="false" />
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:exported="false"
-            android:label="@string/title_activity_login" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
