@@ -77,7 +77,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add new Category"
+                android:text="Add new Category btn"
                  android:layout_marginTop="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -109,7 +109,7 @@
         android:layout_marginTop="28dp"
         android:background="@drawable/login_fields"
         android:paddingHorizontal="16dp"
-        android:text="Cancel"
+        android:text="Cancel btn"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
