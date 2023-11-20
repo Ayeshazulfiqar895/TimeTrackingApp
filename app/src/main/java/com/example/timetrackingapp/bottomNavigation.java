@@ -41,7 +41,10 @@ public class bottomNavigation extends AppCompatActivity {
                     selectedFragment = new HomeFragment();
                 } else if (item.getItemId() == R.id.nav_activity) {
                     selectedFragment = new ActivityCategoryFragment();
-                } else if (item.getItemId() == R.id.nav_track) {
+                } else if (item.getItemId() == R.id.nav_category) {
+                    selectedFragment = new CategoryFragment();
+                }
+                else if (item.getItemId() == R.id.nav_track) {
                     selectedFragment = new TrackTimeFragment();
                 } else if (item.getItemId() == R.id.nav_report) {
                     selectedFragment = new ReportFragment();
