@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CategoryFragment extends Fragment {
     private RecyclerView categoryRecyclerView;
@@ -44,7 +45,7 @@ public class CategoryFragment extends Fragment {
 
                     @Override
                     public void onEditClick(int position) {
-
+                        showEditCategoryDialog(position);
                     }
                 });
         categoryAdapter.setOnEditClickListener(new CategoryAdapter.OnEditClickListener() {
@@ -83,8 +84,12 @@ public class CategoryFragment extends Fragment {
                 String categoryName = editTextCategoryName.getText().toString();
 
                 if (!categoryName.isEmpty()) {
+                    // Generate an ID for the category (you can use UUID.randomUUID().toString())
+                    String categoryId = UUID.randomUUID().toString();
+                    uploadCategoryToFirestore(categoryId, categoryName);
+
                     fetchCategoriesFromFirestore();
-                    uploadCategoryToFirestore(categoryName);
+
                 }
             }
         });
@@ -100,14 +105,14 @@ public class CategoryFragment extends Fragment {
         dialog.show();
     }
 
-    private void uploadCategoryToFirestore(String categoryName) {
+    private void uploadCategoryToFirestore(String categoryId, String categoryName) {
         String userId = auth.getCurrentUser().getUid();
 
-        Category_modal category = new Category_modal(categoryName);
+        Category_modal category = new Category_modal(categoryId, categoryName);
 
         db.collection("users").document(userId)
                 .collection("categories")
-                .document(categoryName)
+                .document(categoryId)  // Use the generated ID as the document ID
                 .set(category)
                 .addOnSuccessListener(documentReference -> {
                     // Category added successfully
@@ -120,7 +125,6 @@ public class CategoryFragment extends Fragment {
 
     private void fetchCategoriesFromFirestore() {
         String userId = auth.getCurrentUser().getUid();
-
         db.collection("users").document(userId)
                 .collection("categories")
                 .get()
@@ -132,14 +136,12 @@ public class CategoryFragment extends Fragment {
                             categories.add(category);
                         }
                         updateRecyclerView(categories);
-
                     } else {
                         // Handle failure
                         Toast.makeText(requireContext(), "Failed to fetch categories", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
     private void showDeleteConfirmationDialog(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Delete Category");
@@ -152,7 +154,6 @@ public class CategoryFragment extends Fragment {
             }
         });
         builder.setNegativeButton("No", null);
-
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -163,7 +164,7 @@ public class CategoryFragment extends Fragment {
 
         db.collection("users").document(userId)
                 .collection("categories")
-                .document(category.getName())
+                .document(category.getId())  // Use the category ID as the document ID
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     // Handle success
@@ -206,26 +207,19 @@ public class CategoryFragment extends Fragment {
     private void updateCategoryInFirestore(int position, String updatedCategoryName) {
         String userId = auth.getCurrentUser().getUid();
         Category_modal category = categoryAdapter.getCategories().get(position);
-
-        // Create a new category object with the updated name
-        Category_modal updatedCategory = new Category_modal(updatedCategoryName);
-
-        // Update the document with the new category object
         db.collection("users").document(userId)
                 .collection("categories")
-                .document(category.getName())
-                .set(updatedCategory)  // Set the updated category with the new name
+                .document(category.getId())  // Use the category ID as the document ID
+                .update("name", updatedCategoryName)
                 .addOnSuccessListener(aVoid -> {
                     // Handle success
-                    categoryAdapter.getCategories().set(position, updatedCategory);  // Update the category in the adapter
+                    category.setName(updatedCategoryName);
                     categoryAdapter.notifyItemChanged(position);
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure
                 });
     }
-
-
     private void updateRecyclerView(List<Category_modal> categories) {
         categoryAdapter.setCategories(categories);
         categoryAdapter.notifyDataSetChanged();
