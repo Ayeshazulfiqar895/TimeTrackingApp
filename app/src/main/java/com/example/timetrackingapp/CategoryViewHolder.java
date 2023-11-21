@@ -6,15 +6,15 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class CategoryViewHolder extends RecyclerView.ViewHolder {
-    private TextView textView;
+    private TextView categoryNameTextView;
 
     public CategoryViewHolder(View itemView) {
         super(itemView);
-        textView = itemView.findViewById(R.id.categoryitem_text);
+        categoryNameTextView = itemView.findViewById(R.id.categoryitem_text);
     }
 
-    public void bindData(YourDataModel data) {
-        textView.setText(data.getText());
+    public void bindData(Category_modal data) {
+        categoryNameTextView.setText(data.getName());
         // Bind other data to views as needed
     }
 }

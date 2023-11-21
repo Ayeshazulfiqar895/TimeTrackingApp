@@ -109,7 +109,7 @@ public class ActivityCategoryFragment extends Fragment {
 
             public void onItemClick(int position) {
 
-                showUpdateItemDialog(position);
+             
 
             }
 
@@ -135,57 +135,6 @@ public class ActivityCategoryFragment extends Fragment {
 
 
 
-        if (currentUser != null) {
-
-            // User is logged in
-
-            firestore = FirebaseFirestore.getInstance();
-
-            String userId = currentUser.getUid(); // Get the user's UID
-
-            itemsCollection = firestore.collection("users").document(userId).collection("activities");
-
-
-
-            // Find the Button with ID "add_button"
-
-            Button addButton = view.findViewById(R.id.add_button);
-
-
-
-            // Set an OnClickListener for the "Add Item" Button
-
-            addButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-
-                public void onClick(View v) {
-
-                    showAddItemDialog();
-
-                }
-
-            });
-
-
-
-            recyclerView = view.findViewById(R.id.recycler_view);
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-            recyclerView.setAdapter(adapter);
-
-
-
-            // Retrieve items from Firestore
-
-            retrieveItemsFromFirestore();
-
-        } else {
-
-            // User is not logged in, handle as needed
-
-        }
 
 
 
@@ -251,7 +200,7 @@ public class ActivityCategoryFragment extends Fragment {
 
 
 
-    private void showUpdateItemDialog(final int position) {
+    private void showUpdateItemDfialog(final int position) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 

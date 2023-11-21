@@ -46,7 +46,7 @@
                 android:height="20dp"
                 android:background="@drawable/login_fields"
                 android:paddingStart="40dp"
-                android:text="Add dgdfjhk"
+                android:text="Add Activity"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +67,7 @@
                 app:layout_constraintVertical_bias="0.5" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/categoryRecyclerView"
+                android:id="@+id/activityRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -86,7 +86,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/categoryRecyclerView" />
+                app:layout_constraintTop_toBottomOf="@+id/activityRecyclerView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
