@@ -34,8 +34,25 @@ public class CategoryFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
-        categoryRecyclerView = rootView.findViewById(R.id.categoryRecyclerView);  // Replace with the actual ID
-        categoryAdapter = new CategoryAdapter(new ArrayList<>());
+        categoryRecyclerView = rootView.findViewById(R.id.categoryRecyclerView);
+        categoryAdapter = new CategoryAdapter(new ArrayList<>(), db,
+                new CategoryAdapter.OnItemClickListener() {
+                    @Override
+                    public void onDeleteClick(int position) {
+                        showDeleteConfirmationDialog(position);
+                    }
+
+                    @Override
+                    public void onEditClick(int position) {
+
+                    }
+                });
+        categoryAdapter.setOnEditClickListener(new CategoryAdapter.OnEditClickListener() {
+            @Override
+            public void onEditClick(int position) {
+                showEditCategoryDialog(position);
+            }
+        });
 
         categoryRecyclerView.setAdapter(categoryAdapter);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -53,7 +70,6 @@ public class CategoryFragment extends Fragment {
         return rootView;
     }
 
-
     private void showAddCategoryDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_category, null);
@@ -67,7 +83,7 @@ public class CategoryFragment extends Fragment {
                 String categoryName = editTextCategoryName.getText().toString();
 
                 if (!categoryName.isEmpty()) {
-                    // Upload to Firestore
+                    fetchCategoriesFromFirestore();
                     uploadCategoryToFirestore(categoryName);
                 }
             }
@@ -124,10 +140,94 @@ public class CategoryFragment extends Fragment {
                 });
     }
 
+    private void showDeleteConfirmationDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Delete Category");
+        builder.setMessage("Are you sure you want to delete this category?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Handle delete action
+                deleteCategory(position);
+            }
+        });
+        builder.setNegativeButton("No", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deleteCategory(int position) {
+        Category_modal category = categoryAdapter.getCategories().get(position);
+        String userId = auth.getCurrentUser().getUid();
+
+        db.collection("users").document(userId)
+                .collection("categories")
+                .document(category.getName())
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    // Handle success
+                    categoryAdapter.deleteCategory(position);
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure
+                });
+    }
+
+    private void showEditCategoryDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_category, null);
+        builder.setView(dialogView);
+
+        EditText editTextCategoryName = dialogView.findViewById(R.id.editTextCategoryName);
+        editTextCategoryName.setText(categoryAdapter.getCategories().get(position).getName());
+
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String updatedCategoryName = editTextCategoryName.getText().toString();
+                if (!updatedCategoryName.isEmpty()) {
+                    updateCategoryInFirestore(position, updatedCategoryName);
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle cancel action if needed
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void updateCategoryInFirestore(int position, String updatedCategoryName) {
+        String userId = auth.getCurrentUser().getUid();
+        Category_modal category = categoryAdapter.getCategories().get(position);
+
+        // Create a new category object with the updated name
+        Category_modal updatedCategory = new Category_modal(updatedCategoryName);
+
+        // Update the document with the new category object
+        db.collection("users").document(userId)
+                .collection("categories")
+                .document(category.getName())
+                .set(updatedCategory)  // Set the updated category with the new name
+                .addOnSuccessListener(aVoid -> {
+                    // Handle success
+                    categoryAdapter.getCategories().set(position, updatedCategory);  // Update the category in the adapter
+                    categoryAdapter.notifyItemChanged(position);
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure
+                });
+    }
+
+
     private void updateRecyclerView(List<Category_modal> categories) {
         categoryAdapter.setCategories(categories);
         categoryAdapter.notifyDataSetChanged();
     }
 }
-
-
