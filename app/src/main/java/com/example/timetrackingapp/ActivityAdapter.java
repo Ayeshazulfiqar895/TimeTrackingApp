@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.CollectionReference;
 import java.util.List;
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
+public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHolder> {
 
     private CollectionReference itemsCollection;
     private List<ListItem> itemList;
@@ -20,7 +20,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         void onDeleteClick(int position);
     }
 
-    public CustomAdapter(List<ListItem> itemList, OnItemClickListener listener) {
+    public ActivityAdapter(List<ListItem> itemList, OnItemClickListener listener) {
         this.itemList = itemList;
         this.clickListener = listener;
     }

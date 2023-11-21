@@ -40,7 +40,7 @@ public class bottomNavigation extends AppCompatActivity {
                 if (item.getItemId() == R.id.nav_home) {
                     selectedFragment = new HomeFragment();
                 } else if (item.getItemId() == R.id.nav_activity) {
-                    selectedFragment = new ActivityCategoryFragment();
+                    selectedFragment = new ActivityFragment();
                 } else if (item.getItemId() == R.id.nav_category) {
                     selectedFragment = new CategoryFragment();
                 }

@@ -88,7 +88,7 @@
 
 
     <Button
-        android:id="@+id/customAddButton"
+        android:id="@+id/dialogAddButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
@@ -113,7 +113,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/customAddButton"
+        app:layout_constraintStart_toEndOf="@+id/dialogAddButton"
         app:layout_constraintTop_toBottomOf="@+id/trackCard" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

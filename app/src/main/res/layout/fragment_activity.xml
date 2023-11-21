@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#5c128c"
-    tools:context=".ActivityCategoryFragment">
+    tools:context=".ActivityFragment">
 
     <TextView
         android:id="@+id/activityTextView"
@@ -40,7 +40,7 @@
 
 
             <Button
-                android:id="@+id/add_button"
+                android:id="@+id/add_button_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:height="20dp"
