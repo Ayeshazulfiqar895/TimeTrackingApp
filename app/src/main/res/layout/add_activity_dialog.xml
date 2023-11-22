@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:padding="10dp"
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
@@ -75,6 +76,7 @@
                 app:layout_constraintHorizontal_bias="0.95"
                 app:layout_constraintTop_toTopOf="@+id/spinner" />
             <Button
+                android:id="@+id/moveToCategoryFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add new Category"
@@ -99,10 +101,10 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/trackCard"
-        app:layout_constraintEnd_toStartOf="@+id/customCancelButton" />
+        app:layout_constraintEnd_toStartOf="@+id/ActivityCancelButton" />
 
     <Button
-        android:id="@+id/customCancelButton"
+        android:id="@+id/ActivityCancelButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"

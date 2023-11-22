@@ -1,5 +1,6 @@
 package com.example.timetrackingapp;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import java.util.List;
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHolder> {
 
     private CollectionReference itemsCollection;
-    private List<ListItem> itemList;
+    private List<Activity_Modal> itemList;
     private OnItemClickListener clickListener;
 
     public interface OnItemClickListener {
@@ -20,7 +21,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
         void onDeleteClick(int position);
     }
 
-    public ActivityAdapter(List<ListItem> itemList, OnItemClickListener listener) {
+    public ActivityAdapter(List<Activity_Modal> itemList, OnItemClickListener listener) {
         this.itemList = itemList;
         this.clickListener = listener;
     }
@@ -45,10 +46,12 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        ListItem item = itemList.get(position);
-        holder.itemImage.setImageResource(item.getImageResource());
-        holder.itemText.setText(item.getText());
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+        Activity_Modal item = itemList.get(position);
+
+        String itemName = item.getName();
+
+        holder.itemText.setText(itemName);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +71,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
             }
         });
     }
+
 
     @Override
     public int getItemCount() {
