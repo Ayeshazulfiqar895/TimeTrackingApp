@@ -45,13 +45,13 @@ public class CategoryFragment extends Fragment {
 
                     @Override
                     public void onEditClick(int position) {
-                        showEditCategoryDialog(position);
+                        //showEditCategoryDialog(position);
                     }
                 });
         categoryAdapter.setOnEditClickListener(new CategoryAdapter.OnEditClickListener() {
             @Override
             public void onEditClick(int position) {
-                showEditCategoryDialog(position);
+              //  showEditCategoryDialog(position);
             }
         });
 
@@ -174,52 +174,52 @@ public class CategoryFragment extends Fragment {
                     // Handle failure
                 });
     }
+//
+//    private void showEditCategoryDialog(int position) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+//        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_category, null);
+//        builder.setView(dialogView);
+//
+//        EditText editTextCategoryName = dialogView.findViewById(R.id.editTextCategoryName);
+//        editTextCategoryName.setText(categoryAdapter.getCategories().get(position).getName());
+//
+//        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                String updatedCategoryName = editTextCategoryName.getText().toString();
+//                if (!updatedCategoryName.isEmpty()) {
+//                    updateCategoryInFirestore(position, updatedCategoryName);
+//                }
+//            }
+//        });
+//
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // Handle cancel action if needed
+//            }
+//        });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//    }
 
-    private void showEditCategoryDialog(int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_category, null);
-        builder.setView(dialogView);
-
-        EditText editTextCategoryName = dialogView.findViewById(R.id.editTextCategoryName);
-        editTextCategoryName.setText(categoryAdapter.getCategories().get(position).getName());
-
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String updatedCategoryName = editTextCategoryName.getText().toString();
-                if (!updatedCategoryName.isEmpty()) {
-                    updateCategoryInFirestore(position, updatedCategoryName);
-                }
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Handle cancel action if needed
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    private void updateCategoryInFirestore(int position, String updatedCategoryName) {
-        String userId = auth.getCurrentUser().getUid();
-        Category_modal category = categoryAdapter.getCategories().get(position);
-        db.collection("users").document(userId)
-                .collection("categories")
-                .document(category.getId())  // Use the category ID as the document ID
-                .update("name", updatedCategoryName)
-                .addOnSuccessListener(aVoid -> {
-                    // Handle success
-                    category.setName(updatedCategoryName);
-                    categoryAdapter.notifyItemChanged(position);
-                })
-                .addOnFailureListener(e -> {
-                    // Handle failure
-                });
-    }
+//    private void updateCategoryInFirestore(int position, String updatedCategoryName) {
+//        String userId = auth.getCurrentUser().getUid();
+//        Category_modal category = categoryAdapter.getCategories().get(position);
+//        db.collection("users").document(userId)
+//                .collection("categories")
+//                .document(category.getId())  // Use the category ID as the document ID
+//                .update("name", updatedCategoryName)
+//                .addOnSuccessListener(aVoid -> {
+//                    // Handle success
+//                    category.setName(updatedCategoryName);
+//                    categoryAdapter.notifyItemChanged(position);
+//                })
+//                .addOnFailureListener(e -> {
+//                    // Handle failure
+//                });
+//    }
     private void updateRecyclerView(List<Category_modal> categories) {
         categoryAdapter.setCategories(categories);
         categoryAdapter.notifyDataSetChanged();

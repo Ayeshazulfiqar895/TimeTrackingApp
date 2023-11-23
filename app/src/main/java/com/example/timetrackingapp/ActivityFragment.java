@@ -2,6 +2,7 @@ package com.example.timetrackingapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,15 +61,31 @@ public class ActivityFragment extends Fragment {
             public void onItemClick(int position) {
                 // Handle item click if needed
             }
-
             @Override
             public void onDeleteClick(int position) {
-                // Remove the item from the list and Firestore
+                // Retrieve the correct documentId for the activity
                 String documentId = itemList.get(position).getDocumentId();
-                itemList.remove(position);
-                adapter.notifyItemRemoved(position);
-                deleteItemFromFirestore(documentId);
+
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setTitle("Delete Category");
+                builder.setMessage("Are you sure you want to delete this category?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Handle delete action
+                        itemList.remove(position);
+                        adapter.notifyItemRemoved(position);
+                        deleteItemFromFirestore(documentId);
+                    }
+                });
+                builder.setNegativeButton("No", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
+
         });
         recyclerView.setAdapter(adapter);
 
@@ -125,7 +142,14 @@ public class ActivityFragment extends Fragment {
                 if (!newActivityName.isEmpty() && !selectedCategory.isEmpty()) {
                     addItemToFirestore(selectedCategory, newActivityName);
                     dialog.dismiss();
-                    fetchAllActivitiesFromFirestore();
+                    Toast.makeText(requireContext(), "Activity Created Successfully", Toast.LENGTH_SHORT).show();
+                    BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
+                    bottomNavigationView.setSelectedItemId(R.id.nav_activity);
+                    FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.box1, new ActivityFragment());
+                    fragmentTransaction.commit();
+
+
                 } else {
                     // Handle the case where inputs are empty
                 }
@@ -171,7 +195,6 @@ public class ActivityFragment extends Fragment {
                     }
                 });
     }
-
     private void addItemToFirestore(String selectedCategory, String newItemText) {
         String userId = auth.getCurrentUser().getUid();
 
@@ -179,6 +202,9 @@ public class ActivityFragment extends Fragment {
         Activity_Modal activity = new Activity_Modal();
         activity.setName(newItemText);
         activity.setCategory(selectedCategory);
+
+        // Set documentId to be equal to the name
+        activity.setDocumentId(newItemText);
 
         // Create a reference to the categories collection for the current user
         CollectionReference categoriesCollection = FirebaseFirestore.getInstance()
@@ -201,12 +227,13 @@ public class ActivityFragment extends Fragment {
                                     .document(userId)
                                     .collection("categories")
                                     .document(categoryId)
-                                    .collection("activities")  // Create a new collection for activities
-                                    .add(activity)
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    .collection("activities")
+                                    .document(newItemText)  // Set documentId to be equal to the name
+                                    .set(activity)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-                                            Toast.makeText(requireContext(), "Activity Created Successfully", Toast.LENGTH_SHORT).show();
+                                        public void onSuccess(Void unused) {
+
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
@@ -222,6 +249,7 @@ public class ActivityFragment extends Fragment {
                     }
                 });
     }
+
     private void fetchActivitiesForCategories() {
         String userId = auth.getCurrentUser().getUid();
 
@@ -246,12 +274,14 @@ public class ActivityFragment extends Fragment {
                                         .get()
                                         .addOnCompleteListener(activityTask -> {
                                             if (activityTask.isSuccessful()) {
+
                                                 for (QueryDocumentSnapshot activityDocument : activityTask.getResult()) {
                                                     Activity_Modal activity = activityDocument.toObject(Activity_Modal.class);
                                                     Log.d("Firestore", "Activity Name: " + activity.getName());
                                                     itemList.add(activity);
                                                 }
                                                 adapter.notifyDataSetChanged();
+
                                             } else {
                                                 Log.e("Firestore", "Error fetching activities: " + activityTask.getException());
                                                 // Handle the case where fetching activities fails
@@ -265,8 +295,48 @@ public class ActivityFragment extends Fragment {
                     });
         }
     }
-
     private void deleteItemFromFirestore(String documentId) {
+        String userId = auth.getCurrentUser().getUid();
 
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .collection("categories")
+                .get()
+                .addOnCompleteListener(categoryTask -> {
+                    if (categoryTask.isSuccessful()) {
+                        for (QueryDocumentSnapshot categoryDocument : categoryTask.getResult()) {
+                            String categoryId = categoryDocument.getId();
+
+                            FirebaseFirestore.getInstance()
+                                    .collection("users")
+                                    .document(userId)
+                                    .collection("categories")
+                                    .document(categoryId)
+                                    .collection("activities")
+                                    .document(documentId)
+                                    .delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            // Activity deleted successfully
+                                            Toast.makeText(requireContext(), "Activity Deleted Successfully", Toast.LENGTH_SHORT).show();
+                                            // Optionally, you may want to refresh the UI or perform other actions after deletion.
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            // Handle failure
+                                            Log.e("Firestore", "Error deleting activity: " + e.getMessage());
+                                        }
+                                    });
+                        }
+                    } else {
+                        // Handle the case where fetching categories fails
+                        Log.e("Firestore", "Error fetching categories: " + categoryTask.getException());
+                    }
+                });
     }
+
 }

@@ -27,13 +27,11 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView itemImage;
         public TextView itemText;
         public ImageView deleteButton;
 
         public ViewHolder(View view) {
             super(view);
-            itemImage = view.findViewById(R.id.item_image);
             itemText = view.findViewById(R.id.item_text);
             deleteButton = view.findViewById(R.id.delete_button);
         }

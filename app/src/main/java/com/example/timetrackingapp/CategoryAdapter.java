@@ -93,13 +93,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
         private TextView categoryNameTextView;
         private ImageView deleteButton;
-        private ImageView editButton;
+       // private ImageView editButton;
 
         public CategoryViewHolder(View itemView) {
             super(itemView);
             categoryNameTextView = itemView.findViewById(R.id.categoryitem_text);
             deleteButton = itemView.findViewById(R.id.delete_button_category);
-            editButton = itemView.findViewById(R.id.editButton_category);
+            //editButton = itemView.findViewById(R.id.editButton_category);
 
             // Set click listener for delete button
             deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -115,17 +115,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             });
 
             // Set click listener for edit button
-            editButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onEditClickListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            onEditClickListener.onEditClick(position);
-                        }
-                    }
-                }
-            });
+//            editButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (onEditClickListener != null) {
+//                        int position = getAdapterPosition();
+//                        if (position != RecyclerView.NO_POSITION) {
+//                            onEditClickListener.onEditClick(position);
+//                        }
+//                    }
+//                }
+//            });
         }
         public void updateCategory(int position, Category_modal updatedCategory) {
             categories.set(position, updatedCategory);

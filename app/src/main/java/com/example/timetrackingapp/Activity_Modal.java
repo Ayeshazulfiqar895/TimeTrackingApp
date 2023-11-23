@@ -5,8 +5,6 @@ public class Activity_Modal {
     private String category;
     private String documentId;
 
-
-
     public String getDocumentId() {
         return documentId;
     }
@@ -14,8 +12,9 @@ public class Activity_Modal {
     public void setDocumentId(String documentId) {
         this.documentId = documentId;
     }
-    public Activity_Modal() {
 
+    public Activity_Modal() {
+        // Default constructor
     }
 
     public Activity_Modal(String name, String category) {
