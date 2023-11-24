@@ -49,9 +49,7 @@ public class TrackTimeFragment extends Fragment {
 
                     @Override
                     public void onItemClick(int position) {
-                        Toast.makeText(requireContext(), "hello", Toast.LENGTH_SHORT).show();
 
-                        onCategoryItemClick(position);
 
                     }
                 });
@@ -84,11 +82,6 @@ public class TrackTimeFragment extends Fragment {
                 });
     }
 
-    private void onCategoryItemClick(int position) {
-        activityRecyclerView.setVisibility(View.VISIBLE);
-
-
-    }
 
     private void updateRecyclerView(List<Category_modal> categories) {
         categoryAdapter.setCategories(categories);
