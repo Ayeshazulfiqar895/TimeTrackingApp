@@ -24,6 +24,7 @@ public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.Cate
     private FirebaseAuth auth;
     private TrackTimeActivityAdapter adapter;
 
+    private int expandedPosition = RecyclerView.NO_POSITION;
     private OnItemClickListener onItemClickListener;
     private OnEditClickListener onEditClickListener;
 
@@ -60,7 +61,10 @@ public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.Cate
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         holder.bind(categories.get(position));
         auth = FirebaseAuth.getInstance();
+        boolean isExpanded = position == expandedPosition;
+        holder.activityRecyclerView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
 
+        ImageView categoryImage = holder.itemView.findViewById(R.id.upArrow);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,63 +73,23 @@ public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.Cate
                     if (position != RecyclerView.NO_POSITION) {
                         onItemClickListener.onItemClick(position);
 
-                        if (holder.activityRecyclerView.getVisibility() == View.VISIBLE) {
-                            holder.activityRecyclerView.setVisibility(View.GONE);
+                        if (expandedPosition != RecyclerView.NO_POSITION) {
+                            notifyItemChanged(expandedPosition);  // Collapse the previously expanded card
+                        }
 
+                        if (expandedPosition == position) {
+                            expandedPosition = RecyclerView.NO_POSITION;  // Collapse the clicked card
                         } else {
                             holder.activityRecyclerView.setVisibility(View.VISIBLE);
-
-                            fetchAllActivitiesFromFirestore(holder.activityRecyclerView);
-                            // Pass the reference of the inner RecyclerView to the adapter
-                            adapter = new TrackTimeActivityAdapter(itemList, new TrackTimeActivityAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(int position) {
-                                    // Handle item click in the inner RecyclerView if needed
-                                }
-
-                                @Override
-                                public void onDeleteClick(int position) {
-                                    // Handle delete action in the inner RecyclerView if needed
-                                }
-                            });
-
-                            // Set the adapter for the inner RecyclerView
-                            holder.activityRecyclerView.setAdapter(adapter);
-
-                            // Fetch items for the inner RecyclerView when it becomes visible
-
+                            categoryImage.setBackgroundResource(R.drawable.baseline_keyboard_arrow_up_24);
+                            expandedPosition = position;  // Expand the clicked card
+                            String clickedCategory = categories.get(position).getName();
+                            fetchAllActivitiesFromFirestore(holder.activityRecyclerView, clickedCategory);
                         }
                     }
                 }
             }
         });
-    }
-
-    private void fetchAllActivitiesFromFirestore(RecyclerView activityRecyclerView) {
-        String userId = auth.getCurrentUser().getUid();
-
-        FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(userId)
-                .collection("categories")
-                .get()
-                .addOnCompleteListener(categoryTask -> {
-                    if (categoryTask.isSuccessful()) {
-                        categoryList.clear();
-
-                        for (QueryDocumentSnapshot categoryDocument : categoryTask.getResult()) {
-                            String categoryName = categoryDocument.getString("name");
-                            categoryList.add(categoryName);
-                        }
-
-                        itemList.clear();
-                        adapter.notifyDataSetChanged();
-
-                        fetchActivitiesForCategories(activityRecyclerView);
-                    } else {
-                        Log.e("Firestore", "Error fetching categories: " + categoryTask.getException());
-                    }
-                });
     }
 
     @Override
@@ -149,7 +113,6 @@ public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.Cate
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
         private TextView categoryNameTextView;
-        private ImageView deleteButton;
         private RecyclerView activityRecyclerView;
 
         public CategoryViewHolder(View itemView) {
@@ -157,8 +120,6 @@ public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.Cate
             categoryNameTextView = itemView.findViewById(R.id.category_trackName);
             activityRecyclerView = itemView.findViewById(R.id.activity_RecyclerView);
             activityRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-
-
         }
 
         public void bind(Category_modal data) {
@@ -167,45 +128,58 @@ public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.Cate
         }
     }
 
-    private void fetchActivitiesForCategories(RecyclerView activityRecyclerView) {
+    private void fetchAllActivitiesFromFirestore(RecyclerView activityRecyclerView, String selectedCategory) {
         String userId = auth.getCurrentUser().getUid();
 
-        for (String category : categoryList) {
-            FirebaseFirestore.getInstance()
-                    .collection("users")
-                    .document(userId)
-                    .collection("categories")
-                    .whereEqualTo("name", category)
-                    .get()
-                    .addOnCompleteListener(categoryTask -> {
-                        if (categoryTask.isSuccessful()) {
-                            for (QueryDocumentSnapshot categoryDocument : categoryTask.getResult()) {
-                                String categoryId = categoryDocument.getId();
+        itemList.clear();
 
-                                FirebaseFirestore.getInstance()
-                                        .collection("users")
-                                        .document(userId)
-                                        .collection("categories")
-                                        .document(categoryId)
-                                        .collection("activities")
-                                        .get()
-                                        .addOnCompleteListener(activityTask -> {
-                                            if (activityTask.isSuccessful()) {
-                                                for (QueryDocumentSnapshot activityDocument : activityTask.getResult()) {
-                                                    Activity_Modal activity = activityDocument.toObject(Activity_Modal.class);
-                                                    Log.d("Firestore", "Activity Name: " + activity.getName());
-                                                    itemList.add(activity);
-                                                }
-                                                adapter.notifyDataSetChanged();
-                                            } else {
-                                                Log.e("Firestore", "Error fetching activities: " + activityTask.getException());
+        // Fetch activities for the selected category
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .collection("categories")
+                .whereEqualTo("name", selectedCategory)
+                .get()
+                .addOnCompleteListener(categoryTask -> {
+                    if (categoryTask.isSuccessful()) {
+                        for (QueryDocumentSnapshot categoryDocument : categoryTask.getResult()) {
+                            String categoryId = categoryDocument.getId();
+
+                            FirebaseFirestore.getInstance()
+                                    .collection("users")
+                                    .document(userId)
+                                    .collection("categories")
+                                    .document(categoryId)
+                                    .collection("activities")
+                                    .get()
+                                    .addOnCompleteListener(activityTask -> {
+                                        if (activityTask.isSuccessful()) {
+                                            for (QueryDocumentSnapshot activityDocument : activityTask.getResult()) {
+                                                Activity_Modal activity = activityDocument.toObject(Activity_Modal.class);
+                                                Log.d("Firestore", "Activity Name: " + activity.getName());
+                                                itemList.add(activity);
                                             }
-                                        });
-                            }
-                        } else {
-                            Log.e("Firestore", "Error fetching categories: " + categoryTask.getException());
+
+                                            adapter = new TrackTimeActivityAdapter(itemList, new TrackTimeActivityAdapter.OnItemClickListener() {
+                                                @Override
+                                                public void onItemClick(int position) {
+                                                }
+
+                                                @Override
+                                                public void onDeleteClick(int position) {
+                                                }
+                                            });
+                                            activityRecyclerView.setAdapter(adapter);
+
+                                            adapter.notifyDataSetChanged();
+                                        } else {
+                                            Log.e("Firestore", "Error fetching activities: " + activityTask.getException());
+                                        }
+                                    });
                         }
-                    });
-        }
+                    } else {
+                        Log.e("Firestore", "Error fetching categories: " + categoryTask.getException());
+                    }
+                });
     }
 }

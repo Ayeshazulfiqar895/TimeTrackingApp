@@ -70,7 +70,7 @@ public class ActivityFragment extends Fragment {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                 builder.setTitle("Delete Category");
-                builder.setMessage("Are you sure you want to delete this category?");
+                builder.setMessage("Are you sure you want to delete this Activity?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -130,7 +130,13 @@ public class ActivityFragment extends Fragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(spinnerAdapter);
 
-
+        if (categoryList.isEmpty()) {
+            List<String> noCategoryList = new ArrayList<>();
+            noCategoryList.add("No Category");
+            ArrayAdapter<String> noCategoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, noCategoryList);
+            noCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerCategory.setAdapter(noCategoryAdapter);
+        }
 
         // Set a click listener for the "Add Activity" button
         buttonAddActivity.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +145,7 @@ public class ActivityFragment extends Fragment {
                 String newActivityName = editTextActivityName.getText().toString();
                 String selectedCategory = spinnerCategory.getSelectedItem().toString();
 
-                if (!newActivityName.isEmpty() && !selectedCategory.isEmpty()) {
+                if (!newActivityName.isEmpty() && !selectedCategory.isEmpty()&&selectedCategory!="No Category") {
                     addItemToFirestore(selectedCategory, newActivityName);
                     dialog.dismiss();
                     Toast.makeText(requireContext(), "Activity Created Successfully", Toast.LENGTH_SHORT).show();
@@ -151,7 +157,7 @@ public class ActivityFragment extends Fragment {
 
 
                 } else {
-                    // Handle the case where inputs are empty
+                    Toast.makeText(requireContext(), "Please create Category First", Toast.LENGTH_SHORT).show();
                 }
             }
         });

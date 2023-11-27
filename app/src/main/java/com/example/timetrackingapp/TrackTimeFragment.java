@@ -50,7 +50,6 @@ public class TrackTimeFragment extends Fragment {
                     @Override
                     public void onItemClick(int position) {
 
-
                     }
                 });
 

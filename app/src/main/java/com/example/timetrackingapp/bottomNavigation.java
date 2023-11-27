@@ -1,8 +1,11 @@
 package com.example.timetrackingapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +57,22 @@ public class bottomNavigation extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setMessage("You really want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Handle logout logic here
+                        finish(); // Finish the activity
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+
 
     private boolean loadFragment(Fragment fragment) {
         if (fragment != null) {

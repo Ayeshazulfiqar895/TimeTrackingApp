@@ -1,5 +1,7 @@
 package com.example.timetrackingapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -41,9 +44,21 @@ public class HomeFragment extends Fragment {
         logoutImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logoutAndRedirectToLogin();
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setMessage("Are you sure to Logout!");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Handle delete action
+                      logoutAndRedirectToLogin();
+                    }
+                });
+                builder.setNegativeButton("No", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
+
 
                     //Set click listener for Add Activity Card Button
         CardView activityCard = view.findViewById(R.id.activityCard);
