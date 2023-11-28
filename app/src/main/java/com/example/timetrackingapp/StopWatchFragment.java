@@ -18,7 +18,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Arrays;
 
 public class StopWatchFragment extends Fragment {
-    private String categoryName;
+    String storedCategoryName ;
+
+    String activityName;
     private Chronometer chronometer;
     private long pauseOffset;
     private boolean running;
@@ -27,12 +29,16 @@ public class StopWatchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_stop_watch, container, false);
         Bundle args = getArguments();
-        String activityName = null;
+        TextView catTextView= rootView.findViewById(R.id.CategoryText);
         if (args != null) {
+            storedCategoryName = Singleton.getInstance().getClickedCategoryName();
             activityName = args.getString("activityName");
             TextView textView = rootView.findViewById(R.id.ActivityText);
+            catTextView.setText(storedCategoryName);
             textView.setText(activityName);
         }
+
+
         chronometer = rootView.findViewById(R.id.chronometer);
         chronometer.setFormat("%s");
         chronometer.setBase(SystemClock.elapsedRealtime());
@@ -78,7 +84,6 @@ public class StopWatchFragment extends Fragment {
             running = false;
         }
     }
-
     public void resetChronometer(View v) {
         chronometer.stop();
         chronometer.setBase(SystemClock.elapsedRealtime());

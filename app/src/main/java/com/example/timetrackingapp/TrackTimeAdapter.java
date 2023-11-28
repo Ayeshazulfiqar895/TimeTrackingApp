@@ -1,5 +1,6 @@
 package com.example.timetrackingapp;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,17 +8,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.timetrackingapp.Singleton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.timetrackingapp.data.LoginRepository;
+import com.google.android.play.core.integrity.v;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.CategoryViewHolder> {
     private List<Category_modal> categories;
     private FirebaseFirestore db;
@@ -68,21 +76,31 @@ public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.Cate
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (onItemClickListener != null) {
                     int position = holder.getAdapterPosition();
+
                     if (position != RecyclerView.NO_POSITION) {
-                        onItemClickListener.onItemClick(position);
+                        String clickedCategoryName = categories.get(position).getName();
+                        onItemClickListener.onItemClick(position, clickedCategoryName);
+
+
+                        Singleton.getInstance().setClickedCategoryName(clickedCategoryName);
 
                         if (expandedPosition != RecyclerView.NO_POSITION) {
-                            notifyItemChanged(expandedPosition);  // Collapse the previously expanded card
+                            notifyItemChanged(expandedPosition);
+
+
                         }
 
                         if (expandedPosition == position) {
-                            expandedPosition = RecyclerView.NO_POSITION;  // Collapse the clicked card
+                            expandedPosition = RecyclerView.NO_POSITION;
+                            categoryImage.setBackgroundResource(R.drawable.baseline_keyboard_arrow_down_24);
+
                         } else {
                             holder.activityRecyclerView.setVisibility(View.VISIBLE);
                             categoryImage.setBackgroundResource(R.drawable.baseline_keyboard_arrow_up_24);
-                            expandedPosition = position;  // Expand the clicked card
+                            expandedPosition = position;
                             String clickedCategory = categories.get(position).getName();
                             fetchAllActivitiesFromFirestore(holder.activityRecyclerView, clickedCategory);
                         }
@@ -100,7 +118,7 @@ public class TrackTimeAdapter extends RecyclerView.Adapter<TrackTimeAdapter.Cate
     public interface OnItemClickListener {
         void onDeleteClick(int position);
         void onEditClick(int position);
-        void onItemClick(int position);
+        void onItemClick(int position, String categoryName); // Updated interface
     }
 
     public List<Category_modal> getCategories() {

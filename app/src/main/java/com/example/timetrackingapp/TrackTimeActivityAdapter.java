@@ -20,11 +20,19 @@ public class TrackTimeActivityAdapter extends RecyclerView.Adapter<TrackTimeActi
     private CollectionReference itemsCollection;
     private List<Activity_Modal> itemList;
     private OnItemClickListener clickListener;
+    private String categoryName;
+
 
     public interface OnItemClickListener {
         void onItemClick(int position);
         void onDeleteClick(int position);
     }
+
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
 
     public TrackTimeActivityAdapter(List<Activity_Modal> itemList, OnItemClickListener listener) {
         this.itemList = itemList;
@@ -37,6 +45,7 @@ public class TrackTimeActivityAdapter extends RecyclerView.Adapter<TrackTimeActi
 
         public ViewHolder(View view) {
             super(view);
+
             itemText = view.findViewById(R.id.timeTrack_ActivityText);
             deleteButton = view.findViewById(R.id.delete_button);
         }
@@ -55,6 +64,7 @@ public class TrackTimeActivityAdapter extends RecyclerView.Adapter<TrackTimeActi
         String itemName = item.getName();
 
         holder.itemText.setText(itemName);
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
 
