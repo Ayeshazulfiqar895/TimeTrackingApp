@@ -7,7 +7,6 @@
 
     <style name="Theme.TimeTrackingApp" parent="Base.Theme.TimeTrackingApp" />
     <style name="BottomNavigationStyle" parent="Widget.Design.BottomNavigationView">
-        <!-- Customize the icon color -->
 <!--        <item name="android:itemIconTint">@color/custom_nav_icon_color</item>-->
 
     </style>

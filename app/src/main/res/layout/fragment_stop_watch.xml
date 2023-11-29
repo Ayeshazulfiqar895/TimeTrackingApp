@@ -11,8 +11,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="30dp"
         android:text="Select an activity"
         android:textColor="#ffffff"
         android:textSize="22dp"
@@ -27,9 +27,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:paddingHorizontal="20dp"
             android:layout_height="match_parent"
-            >
+            android:paddingHorizontal="20dp">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
@@ -80,8 +79,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView"
-                app:layout_constraintWidth_default="percent"
                 app:layout_constraintVertical_bias="0"
+                app:layout_constraintWidth_default="percent"
                 app:layout_constraintWidth_percent="0.9">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -112,57 +111,70 @@
                 android:id="@+id/chronometer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="40dp"
+                android:textSize="50dp"
+                android:fontFamily="sans-serif-black"
                 app:layout_constraintBottom_toTopOf="@+id/btnStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.9" />
+                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                app:layout_constraintVertical_bias="0.5" />
 
             <Button
                 android:id="@+id/btnStart"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:textSize="22dp"
-                android:background="@drawable/login_fields"
-
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_marginBottom="30dp"
+                android:background="@drawable/rounded_button"
                 android:onClick="startChronometer"
                 android:text="Start"
+                android:textSize="22dp"
                 app:layout_constraintBottom_toTopOf="@+id/btnPause"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.7"
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
+            <ImageView
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:src="@drawable/dashed_border"
+                app:layout_constraintBottom_toTopOf="@+id/btnPause"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.47"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                app:layout_constraintVertical_bias="0.65" />
             <Button
                 android:id="@+id/btnPause"
-                android:layout_width="150dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:textSize="22dp"
                 android:background="@drawable/login_fields"
                 android:onClick="pauseChronometer"
                 android:text="Pause"
-                app:layout_constraintBottom_toTopOf="@+id/btnReset"
+                android:textSize="22dp"
+                app:layout_constraintBottom_toBottomOf="@+id/btnReset"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintVertical_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btnReset" />
 
             <Button
                 android:id="@+id/btnReset"
-                android:layout_width="150dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="148dp"
-                android:textSize="22dp"
                 android:background="@drawable/login_fields"
                 android:onClick="resetChronometer"
                 android:text="Reset"
+                android:textSize="22dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.501"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.9" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </LinearLayout>

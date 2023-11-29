@@ -148,9 +148,13 @@ public class login_pg extends AppCompatActivity {
                                 Toast.makeText(login_pg.this, "User data not found. Login failed.", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(e -> {
+                            progressBar.setVisibility(View.GONE);
+
                             Toast.makeText(login_pg.this, "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
                     } else {
+                        progressBar.setVisibility(View.GONE);
+
                         // If sign in fails, it will display a message to the user.
                         Toast.makeText(login_pg.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }

@@ -5,10 +5,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="buttonBackground">#FF0F88</color>
-    <color name="custom_nav_icon_color">#FF0F88</color>
+    <color name="custom_nav_icon_color">#F32133</color>
     <color name="icon_color">#FFFFFF</color>
-    <color name="passive_icon_color">#FFFFFF</color> <!-- Your desired passive (unselected) icon color -->
-    <color name="bottomActive">#FF0F88</color>
+    <color name="passive_icon_color">#FFFFFF</color>
+    <color name="bottomActive">#00ff00</color>
     <color name="bottomUnActive">#FFFFFF</color>
 
 
