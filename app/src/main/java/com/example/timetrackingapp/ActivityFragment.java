@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -39,7 +40,7 @@ public class ActivityFragment extends Fragment {
     private RecyclerView recyclerView;
     private ActivityAdapter adapter;
     private List<Activity_Modal> itemList;
-
+    private ProgressBar progressBar;
     // Firebase Firestore references
     private FirebaseFirestore firestore;
     private FirebaseAuth auth; // Firebase Authentication
@@ -52,7 +53,7 @@ public class ActivityFragment extends Fragment {
         itemList = new ArrayList<>();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-
+        progressBar =view.findViewById(R.id.ActivityprogressBar);
         // Initialize the RecyclerView and its adapter
         recyclerView = view.findViewById(R.id.activityRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -286,6 +287,8 @@ public class ActivityFragment extends Fragment {
                                                     Log.d("Firestore", "Activity Name: " + activity.getName());
                                                     itemList.add(activity);
                                                 }
+                                                progressBar.setVisibility(View.GONE);
+
                                                 adapter.notifyDataSetChanged();
 
                                             } else {

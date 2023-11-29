@@ -1,5 +1,6 @@
 package com.example.timetrackingapp;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -24,6 +26,9 @@ import java.util.UUID;
 
 public class CategoryFragment extends Fragment {
     private RecyclerView categoryRecyclerView;
+
+    private ProgressBar progressBar;
+
     private CategoryAdapter categoryAdapter;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
@@ -34,7 +39,7 @@ public class CategoryFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-
+        progressBar =rootView.findViewById(R.id.CatgeoryprogressBar);
         categoryRecyclerView = rootView.findViewById(R.id.categoryRecyclerView);
         categoryAdapter = new CategoryAdapter(new ArrayList<>(), db,
                 new CategoryAdapter.OnItemClickListener() {
@@ -135,7 +140,9 @@ public class CategoryFragment extends Fragment {
                             Category_modal category = document.toObject(Category_modal.class);
                             categories.add(category);
                         }
+                        progressBar.setVisibility(View.GONE);
                         updateRecyclerView(categories);
+
                     } else {
                         // Handle failure
                         Toast.makeText(requireContext(), "Failed to fetch categories", Toast.LENGTH_SHORT).show();

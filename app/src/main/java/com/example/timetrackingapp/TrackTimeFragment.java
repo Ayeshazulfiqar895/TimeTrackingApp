@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrackTimeFragment extends Fragment {
+
+    private ProgressBar progressBar;
     private RecyclerView categoryRecyclerView;
     private TrackTimeAdapter categoryAdapter;
     private FirebaseFirestore db;
@@ -30,11 +33,12 @@ public class TrackTimeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_track_time, container, false);
-
+        progressBar=rootView.findViewById(R.id.TrackTimeprogressBar);
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         activityRecyclerView = rootView.findViewById(R.id.activity_RecyclerView);
         categoryRecyclerView = rootView.findViewById(R.id.category_RecyclerView);
+
         categoryAdapter = new TrackTimeAdapter(new ArrayList<>(), db,
                 new TrackTimeAdapter.OnItemClickListener() {
                     @Override
@@ -73,8 +77,11 @@ public class TrackTimeFragment extends Fragment {
                             Category_modal category = document.toObject(Category_modal.class);
                             categories.add(category);
                         }
+                        progressBar.setVisibility(View.GONE);
                         updateRecyclerView(categories);
                     } else {
+                        progressBar.setVisibility(View.GONE);
+
                         // Handle failure
                         Toast.makeText(requireContext(), "Failed to fetch categories", Toast.LENGTH_SHORT).show();
                     }

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +27,7 @@ public class register extends AppCompatActivity {
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonRegister;
-
+    private ProgressBar progressBar;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -58,7 +59,8 @@ public class register extends AppCompatActivity {
                 final String phoneNumber = editTextPhoneNumber.getText().toString();
                 final String email = editTextEmail.getText().toString();
                 final String password = editTextPassword.getText().toString();
-
+                progressBar=findViewById(R.id.LoginprogressBar);
+                progressBar.setVisibility(View.VISIBLE);
                 // Perform basic validation (you should perform more checks)
                 if (name.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(register.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
@@ -95,7 +97,12 @@ public class register extends AppCompatActivity {
                                                             editTextPhoneNumber.setText("");
                                                             editTextEmail.setText("");
                                                             editTextPassword.setText("");
+                                                            progressBar.setVisibility(View.GONE);
+                                                            Intent intent = new Intent(register.this, login_pg.class);
+                                                            startActivity(intent);
                                                         } else {
+                                                            progressBar.setVisibility(View.GONE);
+
                                                             Toast.makeText(register.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                                         }
                                                     }

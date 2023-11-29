@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +32,7 @@ public class login_pg extends AppCompatActivity {
     boolean isPasswordVisible = false;
     private FirebaseAuth auth;
 
-
+    private ProgressBar progressBar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +44,7 @@ public class login_pg extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         forgotPasswordTextView = findViewById(R.id.textView1);
         registerTextView = findViewById(R.id.register);
-
+        progressBar=findViewById(R.id.LoginprogressBarr);
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance();
 
@@ -91,11 +92,13 @@ public class login_pg extends AppCompatActivity {
                 // Get the values from the EditText fields
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
+                progressBar.setVisibility(View.VISIBLE);
 
                 // Perform basic validation (you should perform more checks)
                 if (username.isEmpty() || password.isEmpty()) {
                     Toast.makeText(login_pg.this, "Please enter both username and password", Toast.LENGTH_SHORT).show();
                 } else {
+
                     // Call Firebase authentication function
                     signInWithFirebase(username, password);
                 }
@@ -139,6 +142,7 @@ public class login_pg extends AppCompatActivity {
                                 // Finish the current activity to prevent going back to the login page
                                 finish();
                             } else {
+                                progressBar.setVisibility(View.GONE);
                                 Toast.makeText(login_pg.this, "User data not found. Login failed.", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(e -> {
