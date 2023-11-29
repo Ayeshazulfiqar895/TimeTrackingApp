@@ -96,6 +96,7 @@ public class login_pg extends AppCompatActivity {
 
                 // Perform basic validation (you should perform more checks)
                 if (username.isEmpty() || password.isEmpty()) {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(login_pg.this, "Please enter both username and password", Toast.LENGTH_SHORT).show();
                 } else {
 
@@ -111,6 +112,7 @@ public class login_pg extends AppCompatActivity {
         if (!isValidEmail(email)) {
             // Show an error message for invalid email format
             Toast.makeText(login_pg.this, "Invalid email address format", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
             return;
         }
 

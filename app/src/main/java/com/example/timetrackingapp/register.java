@@ -64,6 +64,8 @@ public class register extends AppCompatActivity {
                 // Perform basic validation (you should perform more checks)
                 if (name.isEmpty() || phoneNumber.isEmpty() || email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(register.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+
                 } else {
                     // Create a new user in Firebase Authentication
                     mAuth.createUserWithEmailAndPassword(email, password)
@@ -108,6 +110,7 @@ public class register extends AppCompatActivity {
                                                     }
                                                 });
                                     } else {
+                                        progressBar.setVisibility(View.GONE);
                                         // Registration failed, handle the exception
                                         Exception exception = task.getException();
                                         if (exception != null) {
