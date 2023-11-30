@@ -142,10 +142,10 @@
                 android:src="@drawable/dashed_border"
                 app:layout_constraintBottom_toTopOf="@+id/btnPause"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.47"
+                app:layout_constraintHorizontal_bias="0.488"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView"
-                app:layout_constraintVertical_bias="0.65" />
+                app:layout_constraintVertical_bias="0.648" />
             <Button
                 android:id="@+id/btnPause"
                 android:layout_width="120dp"
