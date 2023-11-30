@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -147,20 +148,20 @@ public class StopWatchFragment extends Fragment {
                                                 CollectionReference newDataCollection = activitiesCollection.document(activityId)
                                                         .collection("newDataCollection");
 
-                                                // Create a map with the data to upload
-                                                Map<String, Object> data = new HashMap<>();
-                                                data.put("date", FieldValue.serverTimestamp());
-                                                data.put("consumingTime", elapsedSeconds);
+                                                // Get the current date and month
+                                                String currentDateAndMonth = getCurrentDateAndMonth();
 
-                                                // Add the data to the new collection
-                                                newDataCollection.add(data)
-                                                        .addOnSuccessListener(documentReference -> {
-                                                            // Handle success
-                                                            Toast.makeText(requireContext(), "Data uploaded to Firestore", Toast.LENGTH_SHORT).show();
-                                                        })
-                                                        .addOnFailureListener(e -> {
-                                                            // Handle failure
-                                                            Toast.makeText(requireContext(), "Failed to upload data", Toast.LENGTH_SHORT).show();
+                                                // Check if a document with the same dateAndMonth already exists
+                                                newDataCollection.whereEqualTo("dateAndMonth", currentDateAndMonth)
+                                                        .get()
+                                                        .addOnCompleteListener(dateQueryTask -> {
+                                                            if (dateQueryTask.isSuccessful() && !dateQueryTask.getResult().isEmpty()) {
+                                                                // If document exists, update consuming time
+                                                                updateConsumingTime(userId, categoryId, activityId, currentDateAndMonth, elapsedSeconds);
+                                                            } else {
+                                                                // If document doesn't exist, create a new one
+                                                                createNewDateCollection(userId, categoryId, activityId, currentDateAndMonth, elapsedSeconds);
+                                                            }
                                                         });
                                             }
                                         } else {
@@ -175,4 +176,76 @@ public class StopWatchFragment extends Fragment {
                     }
                 });
     }
+
+    private void updateConsumingTime(String userId, String categoryId, String activityId, String currentDateAndMonth, long elapsedSeconds) {
+        // Update consuming time in the existing document
+        CollectionReference newDataCollection = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .collection("categories")
+                .document(categoryId)
+                .collection("activities")
+                .document(activityId)
+                .collection("newDataCollection");
+
+        newDataCollection.whereEqualTo("dateAndMonth", currentDateAndMonth)
+                .get()
+                .addOnCompleteListener(updateTask -> {
+                    if (updateTask.isSuccessful() && !updateTask.getResult().isEmpty()) {
+                        // Get the document ID
+                        String documentId = updateTask.getResult().getDocuments().get(0).getId();
+
+                        // Update consuming time
+                        newDataCollection.document(documentId)
+                                .update("consumingTime", FieldValue.increment(elapsedSeconds))
+                                .addOnSuccessListener(documentReference -> {
+                                    // Consuming time updated successfully
+                                    Toast.makeText(requireContext(), "Consuming time updated", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    // Handle failure
+                                    Toast.makeText(requireContext(), "Failed to update consuming time", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                });
+    }
+
+    private void createNewDateCollection(String userId, String categoryId, String activityId, String currentDateAndMonth, long elapsedSeconds) {
+        // Create a new document with consuming time
+        CollectionReference newDataCollection = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .collection("categories")
+                .document(categoryId)
+                .collection("activities")
+                .document(activityId)
+                .collection("newDataCollection");
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("dateAndMonth", currentDateAndMonth);
+        data.put("consumingTime", elapsedSeconds);
+
+        newDataCollection.add(data)
+                .addOnSuccessListener(documentReference -> {
+                    // New document created successfully
+                    Toast.makeText(requireContext(), "New document created", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure
+                    Toast.makeText(requireContext(), "Failed to create new document", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private String getCurrentDateAndMonth() {
+        // Use your preferred way to get the current date and month
+        // Here, I'm using the Calendar class
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1; // Month is zero-based, so add 1
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Format the date and month as a string (you can customize the format as needed)
+        return day + "/" + month + "/" + year;
+    }
+
 }
