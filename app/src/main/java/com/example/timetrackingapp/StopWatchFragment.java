@@ -1,10 +1,19 @@
 package com.example.timetrackingapp;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
@@ -30,6 +39,9 @@ public class StopWatchFragment extends Fragment {
     private Chronometer chronometer;
     private long pauseOffset;
     private boolean running;
+
+    private Button startButton,PauseBtn;
+
     View rootView;
 
     @Override
@@ -37,6 +49,8 @@ public class StopWatchFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_stop_watch, container, false);
         Bundle args = getArguments();
         TextView catTextView = rootView.findViewById(R.id.CategoryText);
+        PauseBtn =rootView.findViewById(R.id.btnPause);
+
         if (args != null) {
             storedCategoryName = Singleton.getInstance().getClickedCategoryName();
             activityName = args.getString("activityName");
@@ -45,6 +59,7 @@ public class StopWatchFragment extends Fragment {
             textView.setText(activityName);
         }
 
+        startButton = rootView.findViewById(R.id.btnStart);
         chronometer = rootView.findViewById(R.id.chronometer);
         chronometer.setFormat("%s");
         chronometer.setBase(SystemClock.elapsedRealtime());
@@ -60,14 +75,30 @@ public class StopWatchFragment extends Fragment {
         rootView.findViewById(R.id.btnPause).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pauseChronometer(v);
+                    if(startButton.getText()=="Stop"){
+                        pauseChronometer(v);
+
+                    }
+
             }
         });
 
         rootView.findViewById(R.id.btnReset).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetChronometer(v);
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setMessage("Are you sure to Reset?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        resetChronometer(v);
+                        startButton.setText("Start");
+                    }
+                });
+                builder.setNegativeButton("No", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
         });
 
@@ -75,7 +106,10 @@ public class StopWatchFragment extends Fragment {
     }
 
     public void startChronometer(View v) {
-        Button startButton = rootView.findViewById(R.id.btnStart);
+
+     if(startButton.getText()=="Start"){
+         resetChronometer(chronometer);
+     }
 
         if (!running) {
             chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
@@ -92,18 +126,50 @@ public class StopWatchFragment extends Fragment {
             long elapsedSeconds = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
 
             // Upload data to Firestore
-            uploadDataToFirestore(elapsedSeconds);
+            if( startButton.getText()=="Stop"){
+                uploadDataToFirestore(elapsedSeconds);
+                startBlinkingAnimation(chronometer);
+            }
 
             startButton.setText("Start");
         }
     }
+    private void startBlinkingAnimation(View view) {
+        Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+        animation.setDuration(500); // duration - half a second
+        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        animation.setRepeatCount(5); // Repeat animation five times
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so it repeats back to the start
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // Do nothing on start
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Do nothing on end
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // Do nothing on repeat
+            }
+        });
+
+        view.startAnimation(animation);
+    }
 
     public void pauseChronometer(View v) {
-        if (running) {
-            chronometer.stop();
-            pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
-            running = false;
-        }
+
+            if (PauseBtn.getText() == "Play") {
+                PauseBtn.setText("Pause");
+                chronometer.start();
+            } else {
+                PauseBtn.setText("Play");
+                chronometer.stop();
+            }
+
     }
 
     public void resetChronometer(View v) {
@@ -112,6 +178,8 @@ public class StopWatchFragment extends Fragment {
         pauseOffset = 0;
         running = false;
     }
+
+
 
     private void uploadDataToFirestore(long elapsedSeconds) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -200,7 +268,7 @@ public class StopWatchFragment extends Fragment {
                                 .update("consumingTime", FieldValue.increment(elapsedSeconds))
                                 .addOnSuccessListener(documentReference -> {
                                     // Consuming time updated successfully
-                                    Toast.makeText(requireContext(), "Consuming time updated", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireContext(), "Time Tracked Successfully", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> {
                                     // Handle failure
@@ -228,7 +296,7 @@ public class StopWatchFragment extends Fragment {
         newDataCollection.add(data)
                 .addOnSuccessListener(documentReference -> {
                     // New document created successfully
-                    Toast.makeText(requireContext(), "New document created", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Time Tracked Successfully", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure
@@ -237,14 +305,13 @@ public class StopWatchFragment extends Fragment {
     }
 
     private String getCurrentDateAndMonth() {
-        // Use your preferred way to get the current date and month
-        // Here, I'm using the Calendar class
+
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1; // Month is zero-based, so add 1
+        int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Format the date and month as a string (you can customize the format as needed)
+
         return day + "/" + month + "/" + year;
     }
 
