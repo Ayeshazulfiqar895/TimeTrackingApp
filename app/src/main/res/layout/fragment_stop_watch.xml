@@ -120,33 +120,33 @@
                 app:layout_constraintTop_toBottomOf="@+id/cardView"
                 app:layout_constraintVertical_bias="0.5" />
 
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:src="@drawable/dashed_border"
+                app:layout_constraintBottom_toTopOf="@+id/btnPause"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                app:layout_constraintVertical_bias="0.686" />
+
             <Button
                 android:id="@+id/btnStart"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_marginBottom="30dp"
                 android:background="@drawable/rounded_button"
                 android:onClick="startChronometer"
                 android:text="Start"
                 android:textSize="22dp"
-                app:layout_constraintBottom_toTopOf="@+id/btnPause"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.501"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView"
-                app:layout_constraintVertical_bias="0.7" />
-
-            <ImageView
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:src="@drawable/dashed_border"
-                app:layout_constraintBottom_toTopOf="@+id/btnPause"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.488"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView"
-                app:layout_constraintVertical_bias="0.648" />
-
+                app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+                app:layout_constraintEnd_toEndOf="@+id/imageView4"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/imageView4"
+                app:layout_constraintTop_toTopOf="@+id/imageView4"
+                app:layout_constraintVertical_bias="0.5" />
             <Button
                 android:id="@+id/btnPause"
                 android:layout_width="120dp"

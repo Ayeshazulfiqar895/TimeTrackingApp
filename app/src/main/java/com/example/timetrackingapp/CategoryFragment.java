@@ -158,6 +158,8 @@ public class CategoryFragment extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 // Handle delete action
                 deleteCategory(position);
+                Toast.makeText(requireContext(), "Category Deleted Successfully", Toast.LENGTH_SHORT).show();
+
             }
         });
         builder.setNegativeButton("No", null);

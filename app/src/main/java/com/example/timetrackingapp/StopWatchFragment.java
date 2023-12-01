@@ -41,6 +41,7 @@ public class StopWatchFragment extends Fragment {
     private boolean running;
 
     private Button startButton,PauseBtn;
+    private long backendElapsedTime = 0;
 
     View rootView;
 
@@ -104,32 +105,26 @@ public class StopWatchFragment extends Fragment {
 
         return rootView;
     }
-
     public void startChronometer(View v) {
-
-     if(startButton.getText()=="Start"){
-         resetChronometer(chronometer);
-     }
-
-        if (!running) {
+        if(startButton.getText()=="Start"){
+    chronometer.setBase(SystemClock.elapsedRealtime());
+    pauseOffset = 0;
+        }
+        if (!running&&startButton.getText()!="Stop") {
             chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
             chronometer.start();
             running = true;
-
             startButton.setText("Stop");
         } else {
             chronometer.stop();
             pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
             running = false;
 
-            // Get the elapsed time in seconds
             long elapsedSeconds = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
+            startBlinkingAnimation(chronometer);
 
             // Upload data to Firestore
-            if( startButton.getText()=="Stop"){
-                uploadDataToFirestore(elapsedSeconds);
-                startBlinkingAnimation(chronometer);
-            }
+            uploadDataToFirestore(elapsedSeconds);
 
             startButton.setText("Start");
         }
@@ -138,7 +133,7 @@ public class StopWatchFragment extends Fragment {
         Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
         animation.setDuration(500); // duration - half a second
         animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-        animation.setRepeatCount(5); // Repeat animation five times
+        animation.setRepeatCount(5);
         animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so it repeats back to the start
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -153,7 +148,7 @@ public class StopWatchFragment extends Fragment {
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-                // Do nothing on repeat
+
             }
         });
 
@@ -162,14 +157,17 @@ public class StopWatchFragment extends Fragment {
 
     public void pauseChronometer(View v) {
 
-            if (PauseBtn.getText() == "Play") {
-                PauseBtn.setText("Pause");
-                chronometer.start();
-            } else {
-                PauseBtn.setText("Play");
-                chronometer.stop();
-            }
-
+        if (running) {
+            chronometer.stop();
+            backendElapsedTime = SystemClock.elapsedRealtime() - chronometer.getBase();
+            running = false;
+            PauseBtn.setText("Play");
+        } else {
+            PauseBtn.setText("Pause");
+            chronometer.setBase(SystemClock.elapsedRealtime() - backendElapsedTime);
+            chronometer.start();
+            running = true;
+        }
     }
 
     public void resetChronometer(View v) {
@@ -230,8 +228,10 @@ public class StopWatchFragment extends Fragment {
                                                                 // If document doesn't exist, create a new one
                                                                 createNewDateCollection(userId, categoryId, activityId, currentDateAndMonth, elapsedSeconds);
                                                             }
+
                                                         });
                                             }
+
                                         } else {
                                             // Handle the case where fetching the activity fails
                                             Toast.makeText(requireContext(), "Failed to fetch activity", Toast.LENGTH_SHORT).show();
