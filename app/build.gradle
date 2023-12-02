@@ -44,6 +44,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
     implementation 'com.google.firebase:firebase-database:20.2.2'
     implementation 'com.google.firebase:firebase-firestore:24.8.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 
 // Exclude Kotlin transitive dependencies for Firebase Authentication
