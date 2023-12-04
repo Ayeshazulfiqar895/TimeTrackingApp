@@ -237,15 +237,15 @@ public class chartFragment extends Fragment {
 
 
     private void showTotalTime(long totalConsumingTime) {
-        TotalTime.setText(totalConsumingTime + "s");
-
+        String formattedTime = formatTime(totalConsumingTime);
+        TotalTime.setText(formattedTime);
     }
-    private String formatTime(long milliseconds) {
-        long seconds = milliseconds / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
+    private String formatTime(long totalConsumingTime) {
+        long hours = totalConsumingTime / 3600;
+        long minutes = (totalConsumingTime % 3600) / 60;
+        long seconds = totalConsumingTime % 60;
 
-        return String.format("%02d:%02d:%02d", hours, minutes % 60, seconds % 60);
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
 
