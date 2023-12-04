@@ -2,6 +2,7 @@ package com.example.timetrackingapp;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class chartFragment extends Fragment {
     private FirebaseAuth auth;
     private TextView category_Name;
     TextView message,TotalTime;
+
 
     private String categoryId;
     private ArrayList<String> activityNames;
@@ -238,7 +240,9 @@ public class chartFragment extends Fragment {
 
     private void showTotalTime(long totalConsumingTime) {
         String formattedTime = formatTime(totalConsumingTime);
-        TotalTime.setText(formattedTime);
+        TotalTime.setText("Total Consumed:"+formattedTime);
+        String boldText = "<b>"+formattedTime+"</b>";
+        TotalTime.setText(Html.fromHtml("Total Consumed: "+ boldText));
     }
     private String formatTime(long totalConsumingTime) {
         long hours = totalConsumingTime / 3600;

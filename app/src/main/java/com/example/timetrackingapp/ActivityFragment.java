@@ -70,7 +70,7 @@ public class ActivityFragment extends Fragment {
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                builder.setTitle("Delete Category");
+                builder.setTitle("Delete Activity");
                 builder.setMessage("Are you sure you want to delete this Activity?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
